@@ -66,7 +66,7 @@ namespace SigilSolver
                         Draw(drawn);
                     }
 
-                    Thread.SpinWait(1000);
+                    Thread.SpinWait(100000);
                 }
 
                 void Draw(bool needClear, bool drawLast = false)
@@ -87,7 +87,7 @@ namespace SigilSolver
                         var pos = Console.GetCursorPosition();
                         Console.SetCursorPosition(pos.Left, pos.Top-grid.Height);
                     }
-                    Console.Write(drawGrid.Print());
+                    drawGrid.Print();
                 }
 
             });
@@ -104,19 +104,16 @@ namespace SigilSolver
             SpinWait.SpinUntil(() => Volatile.Read(ref fin));
             lock (drawLock)
             {
-                Console.WriteLine($"找到{solutions.Count}种解法");
+                Console.WriteLine($"> 共找到 {solutions.Count} 种解法, 最大解法变体数: {solutions.Max?.VariantsCount} 最小解法变体数: {solutions.Min?.VariantsCount}");
                 if (solutions.Count == 0)
                 {
                     return null;
                 }
                 else
                 {
-                    Console.WriteLine($"最大解法变体数: {solutions.Max.VariantsCount} 最小解法变体数: {solutions.Min.VariantsCount}");
                     return solutions.Min;
                 }
             }
-            
-
         }
         
 
@@ -133,7 +130,8 @@ namespace SigilSolver
         {
             (bs[x], bs[y]) = (bs[y], bs[x]);
         }
-        public BlockTypes[] bs;
+
+        BlockTypes[] bs;
         Grid grid;
 
         SortedSet<Solution> solutions = new();

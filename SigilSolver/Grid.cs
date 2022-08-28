@@ -120,21 +120,41 @@ namespace SigilSolver
     internal class GridWithBlockType
     {
         internal BlockTypes[] grid;
+        internal ConsoleColor?[] pieceGrid;
         public int Height { get; }
         public int Width { get; }
         static char[] symbols = new[] {' ', '@', '#', '$', '%', '&', '*', '+'};
+        static ConsoleColor[] colors = new[]
+        {
+            ConsoleColor.Cyan,
+            ConsoleColor.Blue,
+            ConsoleColor.DarkCyan,
+            ConsoleColor.DarkGreen,
+            ConsoleColor.DarkMagenta,
+            ConsoleColor.DarkYellow,
+            ConsoleColor.Green,
+            ConsoleColor.DarkBlue,
+            ConsoleColor.Red,
+            ConsoleColor.DarkGray,
+            ConsoleColor.Yellow,
+            ConsoleColor.Magenta,
+            ConsoleColor.White
+        };
+        int currentPiece = 1;
 
         public GridWithBlockType(int height, int width)
         {
             this.grid = new BlockTypes[height * width];
+            this.pieceGrid = new ConsoleColor?[height * width];
             Height = height;
             Width = width;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set(int x, int y, BlockTypes v)
+        public void Set(int x, int y, BlockTypes v, ConsoleColor piece)
         {
             grid[y * Width + x] = v;
+            pieceGrid[y * Width + x] = piece;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -145,44 +165,38 @@ namespace SigilSolver
             return grid[y * Width + x];
             //return ((grid[y] >> x) & 1) == 1;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Point FindFirstZero()
-        {
-            for (var i = 0; i < grid.Length; i++)
-            {
-                if (grid[i] != 0)
-                {
-                    var y = i / Width;
-                    var x = i % Width;
-                    return new Point(x, y);
-                }
-            }
-            return Throw();
-        }
-
+        
         static Point Throw()
         {
             throw new InvalidOperationException();
         }
 
-        public string Print()
+        public void Print()
         {
-            var sb = new StringBuilder();
+            ConsoleColor lastColor = ConsoleColor.White;
             lock (grid)
             {
                 for (int y = 0; y < Height; y++)
                 {
                     for (int x = 0; x < Width; x++)
                     {
-                        sb.Append(symbols[(int)Get(x, y)]);
+                        var i = (int) Get(x, y);
+                        var symbol = symbols[i];
+                        var color = pieceGrid[y * Width + x] ?? ConsoleColor.White;
+                        if (lastColor != color)
+                        {
+                            Console.ForegroundColor = color;
+                            lastColor = color;
+                        }
+                        Console.Write(symbol);
                     }
 
-                    sb.AppendLine();
+
+                    Console.WriteLine();
                 }
             }
-
-            return sb.ToString();
+            Console.ForegroundColor = ConsoleColor.White;
+            
         }
 
         public bool TrySetBlock(Point p, Block block)
@@ -198,9 +212,11 @@ namespace SigilSolver
                         return false;
                     }
                 }
+
+                var piece = currentPiece++;
                 foreach (var point in block.Coordinates)
                 {
-                    Set(point.X + x, point.Y + y, block.BlockType);
+                    Set(point.X + x, point.Y + y, block.BlockType, colors[piece % colors.Length]);
                 }
 
                 return true;
