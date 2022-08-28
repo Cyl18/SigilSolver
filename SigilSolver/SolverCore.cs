@@ -71,7 +71,7 @@ namespace SigilSolver
 
                 void Draw(bool needClear, bool drawLast = false)
                 {
-                    var blocks = drawLast ? solutions.Min.Sequence : solutionStack.ToArray();
+                    var blocks = drawLast ? solutions.Min().Sequence.Reverse().ToArray() : solutionStack.Reverse().ToArray();
                     var drawGrid = new GridWithBlockType(grid.Height, grid.Width);
                     var count = 0;
                     foreach (var (block, point) in blocks)
@@ -85,9 +85,10 @@ namespace SigilSolver
                     if (needClear)
                     {
                         var pos = Console.GetCursorPosition();
-                        Console.SetCursorPosition(pos.Left, pos.Top-grid.Height);
+                        Console.SetCursorPosition(pos.Left, pos.Top-grid.Height-1);
                     }
                     drawGrid.Print();
+                    Console.WriteLine($"已找到 {solutions.Count} 个解");
                 }
 
             });
@@ -105,14 +106,14 @@ namespace SigilSolver
             lock (drawLock)
             {
                 Console.BackgroundColor = ConsoleColor.Black;
-                Console.WriteLine($"> 共找到 {solutions.Count} 种解法, 最大解法变体数: {solutions.Max?.VariantsCount}, 最小解法变体数: {solutions.Min?.VariantsCount}. 总迭代数: {iter}");
+                Console.WriteLine($"> 共找到 {solutions.Count} 种解法, 最大解法变体数: {solutions.Max()?.VariantsCount}, 最小解法变体数: {solutions.Min()?.VariantsCount}. 总迭代数: {iter}");
                 if (solutions.Count == 0)
                 {
                     return null;
                 }
                 else
                 {
-                    return solutions.Min;
+                    return solutions.Max();
                 }
             }
         }
@@ -135,7 +136,7 @@ namespace SigilSolver
         BlockTypes[] bs;
         Grid grid;
 
-        SortedSet<Solution> solutions = new();
+        List<Solution> solutions = new();
         ConcurrentStack<(Block, Point)> solutionStack = new ();
         Stopwatch runningStopwatch = Stopwatch.StartNew();
         int iter = 0;
@@ -144,7 +145,7 @@ namespace SigilSolver
             if (index >= n)
             {
                 solutions.Add(new Solution(solutionStack.ToArray()));
-                if (runningStopwatch.ElapsedMilliseconds > 1500)
+                if (runningStopwatch.ElapsedMilliseconds > 30000)
                 {
                     throw new TimeoutException();
                 }
@@ -166,9 +167,9 @@ namespace SigilSolver
                             solutionStack.Push((r, zp));
                             if (iter++ < 30000)
                             {
-                                Thread.SpinWait(800);
                             }
-                            
+                            Thread.SpinWait(100);
+
                             RunPermutations(index + 1, n);
                             //Thread.SpinWait(500);
                             solutionStack.TryPop(out _);

@@ -15,7 +15,7 @@ using SigilSolver;
 //  grid.TrySetBlock(new Point(5, 5), new Blocks().ZBlock1);
 // grid.Print();
 
-
+Console.CursorVisible = false;
 Thread.Sleep(3000);
 WinApi.TimeBeginPeriod(1);
 while (true)

@@ -123,7 +123,8 @@ namespace SigilSolver
         internal ConsoleColor?[] pieceGrid;
         public int Height { get; }
         public int Width { get; }
-        static char[] symbols = new[] {' ', '@', '#', '$', '%', '&', '*', '+'};
+        //static char[] symbols = new[] {' ', '@', '#', '$', '%', '&', '*', '+'};
+        static char[] symbols = new[] {'\u25A0', '\u25A0', '\u25A0', '\u25A0', '\u25A0', '\u25A0', '\u25A0', '\u25A0'};
         static ConsoleColor[] colors = new[]
         {
             ConsoleColor.Cyan,
@@ -182,7 +183,7 @@ namespace SigilSolver
                     {
                         var i = (int) Get(x, y);
                         var symbol = symbols[i];
-                        var color = pieceGrid[y * Width + x] ?? ConsoleColor.White;
+                        var color = pieceGrid[y * Width + x] ?? ConsoleColor.Black;
                         if (lastColor != color)
                         {
                             Console.ForegroundColor = color;

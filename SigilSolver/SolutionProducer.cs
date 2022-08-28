@@ -24,7 +24,7 @@ namespace SigilSolver
             }
 
             var sw = Stopwatch.StartNew();
-            using var bitmap = new Bitmap(3840, 2160);
+            using var bitmap = new Bitmap((int)(3840 * Config.Scale), (int)(2160 * Config.Scale));
             using (var g = Graphics.FromImage(bitmap))
             {
                 g.CopyFromScreen(0, 0, 0, 0,
@@ -64,7 +64,7 @@ namespace SigilSolver
 
             Console.WriteLine($"- 棋盘获取用时: {boardTime:F3}s");
 
-            var boardGridSize = 189;
+            var boardGridSize = 189 * Config.Scale;
             // 200*200
             var sw4 = Stopwatch.StartNew();
             var solverCore = new SolverCore(boardInfo.Height, boardInfo.Width, pieceInfo.Select(p => p.Type).ToArray());
@@ -87,7 +87,7 @@ namespace SigilSolver
                 var targetX = (boardInfo.Point.X + (point.X + center.x) * boardGridSize);
                 var targetY = (boardInfo.Point.Y + (point.Y + center.y) * boardGridSize);
                 Console.WriteLine($"正在放置: {block.BlockType}-{block.Variant} ({sourceX}, {sourceY})\t->\t({targetX}, {targetY})");
-                mouse.MoveMouseTo(sourceX * (65536 / 3840.0), sourceY * (65536 / 2160.0));
+                mouse.MoveMouseTo(sourceX * (65536 / (Config.Scale*3840.0)), sourceY * (65536 / (Config.Scale*2160.0)));
                 Thread.Sleep(20);
                 mouse.LeftButtonDown();
                 Thread.Sleep(26);
@@ -107,8 +107,8 @@ namespace SigilSolver
                     Thread.Sleep(10 * block.Variant);
                 }
                 mouse.MoveMouseTo(
-                    targetX * (65536 / 3840.0),
-                    targetY * (65536 / 2160.0)
+                    targetX * (65536 / (3840.0 * Config.Scale)),
+                    targetY * (65536 / (2160.0 * Config.Scale))
                     );
                 
                 Thread.Sleep(65);
@@ -117,7 +117,7 @@ namespace SigilSolver
             }
 
             Thread.Sleep(100);
-            mouse.MoveMouseTo(3624 * (65536 / 3840.0), 1965 * (65536 / 2160.0));
+            mouse.MoveMouseTo(3624 * (65536 / Config.Scale * 3840.0), 1965 * (65536 / Config.Scale * 2160.0));
             Thread.Sleep(50);
             mouse.LeftButtonDown();
             Thread.Sleep(50);

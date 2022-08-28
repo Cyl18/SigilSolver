@@ -19,7 +19,8 @@ namespace SigilSolver
         public static BoardInfo GetBoardInfo(MagickImage image)
         {
             using var magickImage = image.Clone();
-            magickImage.Crop(new MagickGeometry(276, 120, 2172 - 276, 2000 - 120));
+            magickImage.Crop(new MagickGeometry((int)(276 * Config.Scale), (int)(120 * Config.Scale),
+                (int)((2172 - 276) * Config.Scale), (int)((2000 - 120) * Config.Scale)));
             magickImage.RePage();
             magickImage.Threshold(new Percentage(6.4));
             magickImage.Depth = 1;
@@ -62,13 +63,16 @@ namespace SigilSolver
             // magickImage.RePage();
             // magickImage.Write("ccc.png");
             // 40 by 40?
-            return new BoardInfo(new Point(minX*5+276, minY*5+120), (int)Math.Round((maxX - (double)minX)/38), (int)Math.Round((maxY - (double)minY) / 38));
+            return new BoardInfo(new Point(minX*5+ (int)(276 * Config.Scale), minY*5+(int)(120 * Config.Scale)), (int)Math.Round((maxX - (double)minX)/
+                (38 * Config.Scale)), (int)Math.Round((maxY - (double)minY) / (38 * Config.Scale)));
         }
 
         public static IMagickImage<byte> CutPieces(MagickImage image)
         {
             var magickImage = image.Clone();
-            magickImage.Crop(new MagickGeometry(2400, 150, 3500 - 2400, 2100 - 150));
+            magickImage.Crop(new MagickGeometry((int)(2400 * Config.Scale), (int)(150 * Config.Scale),
+                (int)((3500 - 2400) * Config.Scale),
+                (int)((2100 - 150) * Config.Scale)));
             magickImage.Resize(new Percentage(20), new Percentage(20));
 
             foreach (var pixel in magickImage.GetPixelsUnsafe())
@@ -109,7 +113,8 @@ namespace SigilSolver
                         //simage.Write($"{i++}.png");
                         var type = BlockTypeDetector.Get(simage);
                         Console.Write($"{type} ");
-                        blocks.Add(new PieceInfo(type, new Point(pixel.X * 5+2400, pixel.Y * 5+150), simage.Width * 5, simage.Height * 5));
+                        blocks.Add(new PieceInfo(type, new Point(pixel.X * 5+ (int)(2400 * Config.Scale), pixel.Y * 5+
+                            (int)(150 * Config.Scale)), simage.Width * 5, simage.Height * 5));
                     }
                     goto start;
                 }
