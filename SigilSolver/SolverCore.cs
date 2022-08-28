@@ -66,7 +66,7 @@ namespace SigilSolver
                         Draw(drawn);
                     }
 
-                    Thread.SpinWait(100000);
+                    Thread.SpinWait(200000);
                 }
 
                 void Draw(bool needClear, bool drawLast = false)
@@ -80,7 +80,7 @@ namespace SigilSolver
                         drawGrid.TrySetBlock(point, block);
                     }
 
-                    if (count==0) return;
+                    if (count == 0) return;
                     drawn = true;
                     if (needClear)
                     {
@@ -104,7 +104,8 @@ namespace SigilSolver
             SpinWait.SpinUntil(() => Volatile.Read(ref fin));
             lock (drawLock)
             {
-                Console.WriteLine($"> 共找到 {solutions.Count} 种解法, 最大解法变体数: {solutions.Max?.VariantsCount} 最小解法变体数: {solutions.Min?.VariantsCount}");
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.WriteLine($"> 共找到 {solutions.Count} 种解法, 最大解法变体数: {solutions.Max?.VariantsCount}, 最小解法变体数: {solutions.Min?.VariantsCount}. 总迭代数: {iter}");
                 if (solutions.Count == 0)
                 {
                     return null;
@@ -137,6 +138,7 @@ namespace SigilSolver
         SortedSet<Solution> solutions = new();
         ConcurrentStack<(Block, Point)> solutionStack = new ();
         Stopwatch runningStopwatch = Stopwatch.StartNew();
+        int iter = 0;
         internal void RunPermutations(int index, int n)
         {
             if (index >= n)
@@ -162,9 +164,13 @@ namespace SigilSolver
                         if (grid.TrySetBlock(zp, r))
                         {
                             solutionStack.Push((r, zp));
+                            if (iter++ < 30000)
+                            {
+                                Thread.SpinWait(800);
+                            }
+
                             RunPermutations(index + 1, n);
                             //Thread.SpinWait(500);
-                            Thread.SpinWait(1000);
                             solutionStack.TryPop(out _);
                             grid.ClearBlock(zp, r);
                         }

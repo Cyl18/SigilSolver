@@ -23,13 +23,8 @@ using SigilSolver;
 // grid.Print();
 
 
-
+Thread.Sleep(3000);
 WinApi.TimeBeginPeriod(1);
-Console.WriteLine("3");
-var cr = Console.GetCursorPosition();
-Console.SetCursorPosition(cr.Left, cr.Top-1);
-Console.WriteLine("2");
-Console.ReadLine();
  while (true)
  {
      start:

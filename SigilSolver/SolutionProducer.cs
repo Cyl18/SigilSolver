@@ -40,11 +40,11 @@ namespace SigilSolver
         {
             var sw = Stopwatch.StartNew();
 
-
+            double boardTime = -1;
             var boardInfoTask = Task.Run(() =>
             {
                 var boardInfo = ImageProcessor.GetBoardInfo(image);
-                Console.WriteLine($"- 棋盘获取用时: {sw.Elapsed.TotalSeconds:F3}s");
+                boardTime = sw.Elapsed.TotalSeconds;
                 return boardInfo;
             });
 
@@ -62,8 +62,9 @@ namespace SigilSolver
             var boardInfo = boardInfoTask.Result;
             var pieceInfo = pieceInfoTask.Result;
 
+            Console.WriteLine($"- 棋盘获取用时: {boardTime:F3}s");
 
-            var boardGridSize = 187;
+            var boardGridSize = 189;
             // 200*200
             var sw4 = Stopwatch.StartNew();
             var solverCore = new SolverCore(boardInfo.Height, boardInfo.Width, pieceInfo.Select(p => p.Type).ToArray());
@@ -87,9 +88,9 @@ namespace SigilSolver
                 var targetY = (boardInfo.Point.Y + (point.Y + center.y) * boardGridSize);
                 Console.WriteLine($"正在放置: {block.BlockType}-{block.Variant} ({sourceX}, {sourceY})\t->\t({targetX}, {targetY})");
                 mouse.MoveMouseTo(sourceX * (65536 / 3840.0), sourceY * (65536 / 2160.0));
-                Thread.Sleep(10);
+                Thread.Sleep(20);
                 mouse.LeftButtonDown();
-                Thread.Sleep(10);
+                Thread.Sleep(26);
                 mouse.LeftButtonUp();
                 Thread.Sleep(40);
 
@@ -110,9 +111,9 @@ namespace SigilSolver
                     targetY * (65536 / 2160.0)
                     );
                 
-                Thread.Sleep(60);
+                Thread.Sleep(65);
                 mouse.LeftButtonClick();
-                Thread.Sleep(10);
+                Thread.Sleep(20);
             }
 
             Thread.Sleep(100);
@@ -121,7 +122,7 @@ namespace SigilSolver
             mouse.LeftButtonDown();
             Thread.Sleep(50);
             mouse.LeftButtonUp();
-            Console.WriteLine("当前求解完成.");
+            Console.WriteLine("Q.E.D.");
             Console.WriteLine();
         }
 
