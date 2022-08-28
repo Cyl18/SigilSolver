@@ -192,7 +192,7 @@ namespace SigilSolver
 
         public BlockStartFinder(IMagickImage<byte> image, Point startPoint)
         {
-            buffer = new MagickImage(MagickColors.Black, 400, 400);
+            buffer = new MagickImage(MagickColors.Black, 200, 200);
             sourcePixels = image.GetPixelsUnsafe();
             resultPixels = buffer.GetPixelsUnsafe();
             _startPoint = startPoint;
@@ -217,20 +217,19 @@ namespace SigilSolver
         public void SetPixel(int x, int y)
         {
             sourcePixels[x + _startPoint.X, y + _startPoint.Y][0] = 0;
-            resultPixels[x + 200, y + 200][0] = 255;
+            resultPixels[x + 100, y + 100][0] = 255;
         }
 
         public MagickImage CropToSizeAndGetResult()
         {
-            var minX = 400;
-            var minY = 400;
+            var minX = 200;
+            var minY = 200;
             var maxX = 0;
             var maxY = 0;
 
-
-            for (int x = 0; x < 400; x++)
+            for (int x = 0; x < 200; x++)
             {
-                for (int y = 0; y < 400; y++)
+                for (int y = 0; y < 200; y++)
                 {
                     var b = resultPixels[x, y][0] == 255;
                     if (!b) continue;

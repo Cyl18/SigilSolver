@@ -1,11 +1,4 @@
-﻿
-
-
-
-
-
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
@@ -25,34 +18,33 @@ using SigilSolver;
 
 Thread.Sleep(3000);
 WinApi.TimeBeginPeriod(1);
- while (true)
- {
-     start:
-     try
+while (true)
+{
+    start:
+    try
     {
-            Console.Clear();
-         new SolutionProducer().Screenshot();
-         using var screenshot = new MagickImage("screenshot.bmp");
-         var (point, width, height) = ImageProcessor.GetBoardInfo(screenshot);
-         if (width <= 0 || height <= 0 || width > 10 || height > 10) throw new Exception();
-     }
-     catch (Exception e)
-     {
-         Console.WriteLine(e);
-         goto start;
-     }
-
-     try
-     {
-        
-         new SolutionProducer().Run(new MagickImage("screenshot.bmp"));
+        Console.Clear();
+        new SolutionProducer().Screenshot();
+        using var screenshot = new MagickImage("screenshot.bmp");
+        var (point, width, height) = ImageProcessor.GetBoardInfo(screenshot);
+        if (width <= 0 || height <= 0 || width > 10 || height > 10) throw new Exception();
     }
-     catch (Exception e)
-     {
-         Console.WriteLine(e);
-         goto start;
-     }
-     Thread.Sleep(1400);
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        goto start;
+    }
+
+    try
+    {
+        new SolutionProducer().Run(new MagickImage("screenshot.bmp"));
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        goto start;
+    }
+    Thread.Sleep(1400);
 }
 // var stopwatch = Stopwatch.StartNew();
 // var solverCore = new SolverCore(8, 6, new[]
