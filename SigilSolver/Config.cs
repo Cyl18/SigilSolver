@@ -9,6 +9,6 @@ namespace SigilSolver
 
     internal class Config
     {
-        public static double Scale = 2560 / 3840.0;
+        public static double Scale = 3840 / 3840.0;
     }
 }
