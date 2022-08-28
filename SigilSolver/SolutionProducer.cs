@@ -41,16 +41,28 @@ namespace SigilSolver
             var sw = Stopwatch.StartNew();
 
 
-            var boardInfo = ImageProcessor.GetBoardInfo(image);
-            Console.WriteLine($"- 棋盘获取用时: {sw.Elapsed.TotalSeconds:F3}s");
+            var boardInfoTask = Task.Run(() =>
+            {
+                var boardInfo = ImageProcessor.GetBoardInfo(image);
+                Console.WriteLine($"- 棋盘获取用时: {sw.Elapsed.TotalSeconds:F3}s");
+                return boardInfo;
+            });
+
+            var pieceInfoTask = Task.Run(() =>
+            {
+                var sw2 = Stopwatch.StartNew();
+                var cut = ImageProcessor.CutPieces(image);
+                Console.WriteLine($"- 切分方块用时: {sw2.Elapsed.TotalSeconds:F3}s");
+                var sw3 = Stopwatch.StartNew();
+                var pieceInfo = ImageProcessor.FindBlocks(cut).ToList();
+                Console.WriteLine($"- 寻找方块用时: {sw3.Elapsed.TotalSeconds:F3}s");
+                return pieceInfo;
+            });
+
+            var boardInfo = boardInfoTask.Result;
+            var pieceInfo = pieceInfoTask.Result;
 
 
-            var sw2 = Stopwatch.StartNew();
-            var cut = ImageProcessor.CutPieces(image);
-            Console.WriteLine($"- 切分方块用时: {sw2.Elapsed.TotalSeconds:F3}s");
-            var sw3 = Stopwatch.StartNew();
-            var pieceInfo = ImageProcessor.FindBlocks(cut).ToList();
-            Console.WriteLine($"- 寻找方块用时: {sw3.Elapsed.TotalSeconds:F3}s");
             var boardGridSize = 187;
             // 200*200
             var sw4 = Stopwatch.StartNew();
