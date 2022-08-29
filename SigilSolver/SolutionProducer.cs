@@ -118,9 +118,9 @@ namespace SigilSolver
 
             Thread.Sleep(100);
             mouse.MoveMouseTo(Config.Scale * 3624 * (65536 / (Config.Scale * 3840.0)), Config.Scale * 1965 * (65536 / (Config.Scale * 2160.0)));
-            Thread.Sleep(50);
+            Thread.Sleep(70);
             mouse.LeftButtonDown();
-            Thread.Sleep(50);
+            Thread.Sleep(70);
             mouse.LeftButtonUp();
             Console.WriteLine("Q.E.D.");
             Console.WriteLine();

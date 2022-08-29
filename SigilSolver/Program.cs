@@ -44,7 +44,7 @@ while (true)
         Console.WriteLine(e);
         goto start;
     }
-    Thread.Sleep(1400);
+    Thread.Sleep(1300);
 }
 // var stopwatch = Stopwatch.StartNew();
 // var solverCore = new SolverCore(8, 6, new[]
